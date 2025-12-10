@@ -82,7 +82,7 @@ async function handle401(url: string, options: RequestInit): Promise<Response> {
 
 /**
  * HTTP Client exposed seperti axios
- */
+*/
 export const httpClient = {
     get: (url: string) => fetchWithInterceptor(url, { method: "GET" }),
 

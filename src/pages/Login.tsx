@@ -18,7 +18,6 @@ export default function LoginPage() {
             setLoading(true);
             setError("");
 
-            // Pastikan panggil login sesuai tipe LoginCredentials di AuthProvider
             await login({ username, password });
 
             // Redirect ke Dashboard setelah login sukses

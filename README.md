@@ -1,73 +1,166 @@
-# React + TypeScript + Vite
+# 🔐 Secure SPA Auth Interceptor System (React + TypeScript + Tailwind)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Project ini adalah Single Page Application (SPA) yang dibuat khusus untuk challenge:
 
-Currently, two official plugins are available:
+**"Implementasi Auth Interceptor System dengan Secure Data Fetching & Silent Refresh"**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Dibangun menggunakan:
+- React + TypeScript strict mode
+- Custom HTTP Client (tanpa axios)
+- TailwindCSS
+- Mock API (simulasi login, protected route, 401 unauthorized, refresh token, retry request)
+- Global Auth Context
+- Protected Router + Auto Retry
+- Concurrency-safe refresh token queue
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Fitur Utama
 
-## Expanding the ESLint configuration
+### 1. **Custom HTTP Client**
+- Setiap request otomatis menyisipkan **access token** ke header.
+- Jika token expired → server merespon **401 Unauthorized**.
+- Client otomatis:
+  - Melakukan **silent refresh token di background**
+  - Melakukan **retry request yang gagal**
+  - Tidak mengganggu experience user (tidak logout, tidak blank)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 2. **Concurrency Handling**
+Jika 10 request bersamaan dan semuanya expired:
+- Hanya **1 request** yang melakukan refresh token
+- 9 request lain **menunggu** refresh selesai
+- Setelah sukses → semua request di-retry ulang  
+Ini memakai mekanisme **Promise queue**.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 3. **Mock API Realistis**
+- login
+- refresh token
+- protected `/user/profile`
+- auto-expire token setiap 5–10 detik (simulasi real)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 4. **Global Auth Context**
+- login(), logout()
+- user state
+- auto-restore token dari storage
+- auto-refresh background
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 5. **Route Protection**
+User tanpa token → redirect ke `/login`.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 6. **Tailwind UI Minimal**
+Clean, no UI library (sesuai aturan challenge).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📁 Folder Structure
+
+src/
+├── api/
+│   ├── authApi.ts
+│   ├── authService.ts
+│   ├── httpClient.ts
+│   └── userApi.ts
+│
+├── auth/
+│   ├── AuthContext.tsx
+│   ├── AuthProvider.tsx
+│   └── useAuth.ts
+│
+├── components/
+│   ├── Button.tsx
+│   ├── Input.tsx
+│   └── Loading.tsx
+│
+├── config/
+│   ├── constants.ts
+│   └── env.ts
+│
+├── context/
+│   ├── GlobalLoadingContext.tsx
+│   ├── GlobalLoadingContextValue.ts
+│   └── useGlobalLoading.ts
+│
+├── hooks/
+│   ├── useFetch.ts
+│   └── useProtectedRoute.ts
+│
+├── mocks/
+│   ├── handlers/
+│   │   ├── authHandler.ts
+│   │   └── userHandler.ts
+│   └── fakeServer.ts
+│
+├── pages/
+│   ├── Dashboard.tsx
+│   ├── Login.tsx
+│   └── Profile.tsx
+│
+├── router/
+│   └── (File router Anda ada di sini)
+│
+├── scripts/
+│   └── testSilentRefresh.ts
+│
+├── styles/
+│   └── global.css
+│
+├── types/
+│   ├── auth.d.ts
+│   ├── common.d.ts
+│   ├── types.d.ts
+│   └── user.d.ts
+│
+├── utils/
+│   ├── storage.ts
+│   ├── token.ts
+│   └── tokenParser.ts
+│
+├── App.tsx
+└── main.tsx
+
+---
+
+## 🧪 Cara Menjalankan (Development)
+
+### 1. Clone repo
+```sh
+git clone https://github.com/ayipmhdd/secure-spa-auth.git
+cd secure-spa-auth
+
+### 2. Install Depedencies
+npm install
+
+### 3. Jalankan mock API
+(Mulai otomatis oleh fakeServer)
+
+
+### 4. Start project
+npm run dev
+
+Aplikasi berjalan di:
+
+http://localhost:5173
+
+
+---
+
+### Token Flow Overview
+Request → attach access token → API
+  └─[401 Unauthorized]
+       ↓
+    Silent Refresh (refresh token)
+       ↓
+    Update tokens → retry request
+
+---
+
+## 🔑 Akun Login Simulasi:
+Username: ayip
+Password: 123456
+
+---
+
+👤 Author
+
+Ayip Muhammad
+Challenge: SPA Auth Interceptor System

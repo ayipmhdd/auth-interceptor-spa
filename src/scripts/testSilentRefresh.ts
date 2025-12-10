@@ -5,7 +5,6 @@ import { saveTokens } from "../utils/token";
 export async function testSilentRefresh() {
     console.log("⚙️ [Test] Setting up simulation tokens...");
 
-    // PERBAIKAN DISINI:
     // Gunakan JSON.stringify agar formatnya aman dibaca oleh storageGet
     // (Karena storageGet melakukan JSON.parse)
     saveTokens({

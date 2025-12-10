@@ -16,8 +16,6 @@ export function initMockServer() {
             const found = options.headers.find(h => h[0].toLowerCase() === 'authorization');
             authHeader = found ? found[1] : null;
         } else {
-            // PERBAIKAN DISINI:
-            // Ganti 'any' dengan 'Record<string, string>'
             const headers = options.headers as Record<string, string>;
             
             const keys = Object.keys(headers);
@@ -47,14 +45,10 @@ export function initMockServer() {
         console.log(`[MockServer] Fetch called: ${path}`, options);
 
         // --- ROUTING ---
-
         if (path === "/api/login") {
             return authHandler.login(options);
         }
 
-        // PERBAIKAN DISINI:
-        // Tambahkan "|| path === '/refresh-token'"
-        // Agar Mock Server menangkap request refresh dari client Anda
         if (path === "/api/refresh" || path === "/refresh-token") {
             console.log("[MockServer] Refresh endpoint hit - Memberikan token baru...");
             return authHandler.refresh();

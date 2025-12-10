@@ -14,8 +14,6 @@ if (import.meta.env.DEV) {
 
   console.log("⚙️ [Main] Setting up Simulation Tokens...");
   
-  // PERBAIKAN DISINI:
-  // Tambahkan JSON.stringify() agar formatnya bisa dibaca oleh storageGet
   localStorage.setItem("accessToken", JSON.stringify("Bearer DUMMY_TOKEN_EXPIRED")); 
   localStorage.setItem("refreshToken", JSON.stringify("valid-refresh-token-123")); 
 }

@@ -5,7 +5,7 @@ export interface JwtPayload {
     iat?: number;
     sub?: string;
     role?: string;
-    [key: string]: unknown; // ganti any -> unknown
+    [key: string]: unknown;
 }
 
 /**

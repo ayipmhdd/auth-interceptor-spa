@@ -4,9 +4,7 @@ import { storageGet, storageSet, storageRemove } from "../utils/storage";
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
 
-// =============================
 // LOGIN REQUEST
-// =============================
 export async function loginRequest(username: string, password: string) {
     const response = await fetch("http://localhost:3000/login", {
         method: "POST",
@@ -28,9 +26,7 @@ export async function loginRequest(username: string, password: string) {
     return data;
 }
 
-// =============================
 // REFRESH TOKEN REQUEST
-// =============================
 export async function refreshTokenRequest(): Promise<string> {
     const refreshToken = storageGet<string>(REFRESH_TOKEN_KEY);
 
@@ -59,9 +55,7 @@ export async function refreshTokenRequest(): Promise<string> {
     return data.accessToken;
 }
 
-// =============================
 // LOGOUT
-// =============================
 export function logout() {
     storageRemove(ACCESS_TOKEN_KEY);
     storageRemove(REFRESH_TOKEN_KEY);
